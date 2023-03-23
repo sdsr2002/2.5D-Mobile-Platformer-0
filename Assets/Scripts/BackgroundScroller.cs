@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BackgroundScroller : MonoBehaviour
@@ -12,4 +9,3 @@ public class BackgroundScroller : MonoBehaviour
         GameManager.Instance.updateBackground = (x) => material.SetFloat("_XPosition", x);
     }
 }
-    

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -7,21 +6,20 @@ public class GameManager : MonoBehaviour
 
     #region Singelton
     private static GameManager _instance;
-    public static GameManager Instance { 
-        get 
-        { 
-            if (_instance != null)
+    public static GameManager Instance
+    {
+        get
+        {
+            if (!_instance)
             {
-                return _instance;
+                _instance = Instantiate(Resources.Load<GameObject>("Managers/GameManager")).GetComponent<GameManager>();
+                _instance.Init();
             }
 
-            GameManager newInstance = (Instantiate(Resources.Load("Managers/GameManager") as GameObject)).GetComponent<GameManager>();
-            _instance = newInstance;
-            _instance.Init();
             return _instance;
         }
 
-        private set 
+        private set
         {
             _instance = value;
         }
@@ -33,8 +31,8 @@ public class GameManager : MonoBehaviour
     {
         if (_init) return;
         _init = true;
-        if (_instance != this) 
-        { 
+        if (_instance != this)
+        {
             this.enabled = false;
             return;
         }
@@ -44,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     public Action<float> updateBackground;
     public PlayerHandler PlayerHandler;
+    private Camera _mainCamera => Camera.main;
     private void Update()
     {
         if (!_init) return;
@@ -53,8 +52,8 @@ public class GameManager : MonoBehaviour
 
     private void UpdateBackground()
     {
-        if (updateBackground != null && PlayerHandler != null) updateBackground(PlayerHandler.Position.x);
-
+        if (updateBackground != null && _mainCamera) updateBackground(_mainCamera.transform.position.x);
+        return;
     }
 
 }
