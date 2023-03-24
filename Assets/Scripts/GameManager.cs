@@ -1,5 +1,8 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
+
+public delegate void EmptyDelegate();
 
 public class GameManager : MonoBehaviour
 {
@@ -43,6 +46,37 @@ public class GameManager : MonoBehaviour
     public Action<float> updateBackground;
     public PlayerHandler PlayerHandler;
     private Camera _mainCamera => Camera.main;
+    private EmptyDelegate OnWin;
+    private EmptyDelegate OnLost;
+
+    public WonUI wonUI;
+    public LostUI lostUI;
+
+    private void Awake()
+    {
+        if (Application.isMobilePlatform && Application.targetFrameRate != 60)
+            Application.targetFrameRate = 60;
+        OnWin += WonUI;
+        OnWin += LostUI;
+        OnWin += () => PlayerHandler.PlayIdleAnimation(4);
+        OnWin += () => PlayerHandler.SetDead(true);
+    }
+
+    private void WonUI()
+    {
+        if (!wonUI) return;
+
+        wonUI.gameObject.SetActive(true);
+    }
+
+    private void LostUI()
+    {
+        if (!lostUI) return;
+
+        lostUI.gameObject.SetActive(true);
+    }
+
+
     private void Update()
     {
         if (!_init) return;
@@ -56,4 +90,23 @@ public class GameManager : MonoBehaviour
         return;
     }
 
+    public static void Won()
+    {
+        Instance.OnWin();
+    }
+
+    public void AddWinEvent(ref EmptyDelegate action)
+    {
+        OnWin += action;
+    }
+
+    public static void Lost()
+    {
+        Instance.OnLost();
+    }
+
+    public void AddLostEvent(ref EmptyDelegate action)
+    {
+        OnLost += action;
+    }
 }

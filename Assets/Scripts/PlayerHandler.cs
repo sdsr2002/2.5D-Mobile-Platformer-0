@@ -128,7 +128,8 @@ public class PlayerHandler : MonoBehaviour
 
         UpdateGravity();
         UpdateMovement();
-        UpdateRotation();
+        if (!_isDead)
+            UpdateRotation();
         UpdateAnimator();
         
         // 
@@ -234,11 +235,22 @@ public class PlayerHandler : MonoBehaviour
     }
 
     [ContextMenu("Die")]
-    private void Die()
+    public void Die()
     {
         _isDead = true;
         _animator.SetBool("Death_b", true);
         //this.enabled = false;
+        GameManager.Lost();
+    }
+
+    public void PlayIdleAnimation(int i)
+    {
+        if (!_animator) return;
+        _animator.SetInteger("Animation_int",i);
+    }
+    public void SetDead(bool dead)
+    {
+        _isDead = dead;
     }
 
     private void OnDrawGizmosSelected()
