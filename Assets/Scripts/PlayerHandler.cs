@@ -223,6 +223,7 @@ public class PlayerHandler : MonoBehaviour
         _jumpCorutineTimer = 0;
         while (_jumpCorutineTimer < 1f)
         {
+            if (_isDead) break;
             _jumpCorutineTimer += Time.deltaTime * _jumpSpeed;
             _jumpingFloat01 = _jumpCorutineTimer;
             _characterController.Move(Vector3.up * Time.deltaTime * _jumpHeight * _jumpCurve.Evaluate(_jumpCorutineTimer));

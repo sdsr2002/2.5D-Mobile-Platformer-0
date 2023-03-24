@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,11 +9,18 @@ public class WonUI : MonoBehaviour
     {
         action = OnWin;
         GameManager.Instance.AddWinEvent(ref action);
-        GameManager.Instance.wonUI = this;
-        gameObject.SetActive(false);
+        Parent.gameObject.SetActive(false);
     }
+
     private void OnWin()
     {
+        if (!Parent) return;
         Parent.gameObject.SetActive(true);
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Exist)
+        GameManager.Instance.RemoveWinEvent(ref action);
     }
 }

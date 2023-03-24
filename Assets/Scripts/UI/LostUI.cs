@@ -9,11 +9,18 @@ public class LostUI : MonoBehaviour
     {
         action = OnLost;
         GameManager.Instance.AddLostEvent(ref action);
-        GameManager.Instance.lostUI = this;
-        gameObject.SetActive(false);
+        Parent.gameObject.SetActive(false);
     }
+
     private void OnLost()
     {
+        if (!Parent) return;
         Parent.gameObject.SetActive(true);
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Exist)
+            GameManager.Instance.RemoveLostEvent(ref action);
     }
 }

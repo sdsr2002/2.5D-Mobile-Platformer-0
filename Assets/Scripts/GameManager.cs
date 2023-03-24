@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public delegate void EmptyDelegate();
@@ -46,36 +45,20 @@ public class GameManager : MonoBehaviour
     public Action<float> updateBackground;
     public PlayerHandler PlayerHandler;
     private Camera _mainCamera => Camera.main;
+    public static bool Exist => _instance;
+
     private EmptyDelegate OnWin;
     private EmptyDelegate OnLost;
-
-    public WonUI wonUI;
-    public LostUI lostUI;
 
     private void Awake()
     {
         if (Application.isMobilePlatform && Application.targetFrameRate != 60)
             Application.targetFrameRate = 60;
-        OnWin += WonUI;
-        OnWin += LostUI;
+        //OnWin += WonUI;
+        //OnLost += LostUI;
         OnWin += () => PlayerHandler.PlayIdleAnimation(4);
         OnWin += () => PlayerHandler.SetDead(true);
     }
-
-    private void WonUI()
-    {
-        if (!wonUI) return;
-
-        wonUI.gameObject.SetActive(true);
-    }
-
-    private void LostUI()
-    {
-        if (!lostUI) return;
-
-        lostUI.gameObject.SetActive(true);
-    }
-
 
     private void Update()
     {
@@ -95,18 +78,28 @@ public class GameManager : MonoBehaviour
         Instance.OnWin();
     }
 
-    public void AddWinEvent(ref EmptyDelegate action)
-    {
-        OnWin += action;
-    }
-
     public static void Lost()
     {
         Instance.OnLost();
     }
 
+    public void AddWinEvent(ref EmptyDelegate action)
+    {
+        OnWin += action;
+    }
+
     public void AddLostEvent(ref EmptyDelegate action)
     {
         OnLost += action;
+    }
+
+    public void RemoveWinEvent(ref EmptyDelegate action)
+    {
+        OnWin -= action;
+    }
+
+    public void RemoveLostEvent(ref EmptyDelegate action)
+    {
+        OnLost -= action;
     }
 }
